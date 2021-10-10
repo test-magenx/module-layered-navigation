@@ -46,9 +46,6 @@ class NavigationTest extends TestCase
      */
     protected $model;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp(): void
     {
         $this->catalogLayerMock = $this->createMock(Layer::class);
@@ -58,7 +55,7 @@ class NavigationTest extends TestCase
         /** @var MockObject|Resolver $layerResolver */
         $layerResolver = $this->getMockBuilder(Resolver::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['get', 'create'])
+            ->setMethods(['get', 'create'])
             ->getMock();
         $layerResolver->expects($this->any())
             ->method($this->anything())
@@ -76,15 +73,11 @@ class NavigationTest extends TestCase
         $this->layoutMock = $this->getMockForAbstractClass(LayoutInterface::class);
     }
 
-    /**
-     * @return void
-     */
-    public function testGetStateHtml(): void
+    public function testGetStateHtml()
     {
         $stateHtml = 'I feel good';
         $this->filterListMock->expects($this->any())->method('getFilters')->willReturn([]);
-        $this->layoutMock
-            ->method('getChildName')
+        $this->layoutMock->expects($this->at(0))->method('getChildName')
             ->with(null, 'state')
             ->willReturn('state block');
 
@@ -100,10 +93,8 @@ class NavigationTest extends TestCase
      * @covers \Magento\LayeredNavigation\Block\Navigation::getLayer()
      * @covers \Magento\LayeredNavigation\Block\Navigation::getFilters()
      * @covers \Magento\LayeredNavigation\Block\Navigation::canShowBlock()
-     *
-     * @return void
      */
-    public function testCanShowBlock(): void
+    public function testCanShowBlock()
     {
         // getFilers()
         $filters = ['To' => 'be', 'or' => 'not', 'to' => 'be'];
@@ -134,10 +125,9 @@ class NavigationTest extends TestCase
      * @param string $mode
      * @param bool $result
      *
-     * @return void
      * @dataProvider canShowBlockDataProvider
      */
-    public function testCanShowBlockWithDifferentDisplayModes(string $mode, bool $result): void
+    public function testCanShowBlockWithDifferentDisplayModes(string $mode, bool $result)
     {
         $filters = ['To' => 'be', 'or' => 'not', 'to' => 'be'];
 
@@ -161,28 +151,25 @@ class NavigationTest extends TestCase
     /**
      * @return array
      */
-    public function canShowBlockDataProvider(): array
+    public function canShowBlockDataProvider()
     {
         return [
             [
                 Category::DM_PRODUCT,
-                true
+                true,
             ],
             [
                 Category::DM_PAGE,
-                false
+                false,
             ],
             [
                 Category::DM_MIXED,
-                true
+                true,
             ],
         ];
     }
 
-    /**
-     * @return void
-     */
-    public function testGetClearUrl(): void
+    public function testGetClearUrl()
     {
         $this->filterListMock->expects($this->any())->method('getFilters')->willReturn([]);
         $this->model->setLayout($this->layoutMock);
